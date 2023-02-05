@@ -6,14 +6,18 @@ const {
   updateBrand,
   deleteBrand,
 } = require("../controller/brandController");
+const { isAuthenticated, authorizeRoles } = require("../middleware/auth");
 const router = express.Router();
 
-router.route("/brands").post(addBrand).get(getBrands);
+router
+  .route("/brands")
+  .post(isAuthenticated, authorizeRoles("admin"), addBrand)
+  .get(getBrands);
 
 router
   .route("/brands/:id")
   .get(getBrandDetails)
-  .put(updateBrand)
-  .delete(deleteBrand);
+  .put(isAuthenticated, authorizeRoles("admin"), updateBrand)
+  .delete(isAuthenticated, authorizeRoles("admin"), deleteBrand);
 
 module.exports = router;
