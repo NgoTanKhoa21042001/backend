@@ -17,9 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const category = require("./routes/categoryRoute");
 const brand = require("./routes/brandRoute");
-
+const user = require("./routes/userRoute");
 app.use("/api/v1", category);
 app.use("/api/v1", brand);
+app.use("/api/v1", user);
 
 app.use(errorMiddleware);
 // AUTHENTICATION : SO sánh pass của user so với info trên db, so sánh dữ liệu nhập vs db đã có
