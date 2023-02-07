@@ -5,6 +5,7 @@ const User = require("../models/userModel");
 const { getRefreshToken, getAccessToken } = require("../utils/getTokens");
 const { sendUser } = require("../utils/sendUser");
 const jwt = require("jsonwebtoken");
+const { saveImages } = require("../utils/processImages");
 const cookieOption = {
   httpOnly: true,
   secure: true,
@@ -24,7 +25,13 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       )
     );
   user = await User.create({ email, name, password });
-  res.status(201).json({ success: true, user });
+  if (user) {
+    const path = `avatar/${user._id}`;
+    const userAvatar = await saveImages(req.files, path);
+    user.avatar = { url: userAvatar[0] };
+    await user.save();
+    res.status(201).json({ success: true, user });
+  }
 });
 
 // login user

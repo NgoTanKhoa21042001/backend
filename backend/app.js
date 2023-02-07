@@ -4,6 +4,9 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const errorMiddleware = require("./middleware/error");
+
+const path = require("path");
+app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     origin: ["http://localhost:3000", "*"],
