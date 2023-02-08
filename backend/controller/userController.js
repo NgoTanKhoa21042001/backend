@@ -79,8 +79,10 @@ exports.logout = asyncHandler(async (req, res, next) => {
   if (!cookies?.jwt)
     return res.status(200).json({ success: true, message: "Logged out" });
   const refreshToken = cookies.jwt;
+  // tìm cái refreshToken
   const user = await User.findOne({ refreshToken }).exec();
   if (!user) {
+    // logout thì cleaer cookie
     res.clearCookie("jwt", { httpOnly: true });
     return res.status(200).json({
       success: true,
@@ -142,5 +144,30 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     user: sendUser(user),
+  });
+});
+
+// get users
+exports.getUsers = asyncHandler(async (req, res, next) => {
+  const { userId } = req.userInfo;
+  // loại bỏ phần ghi token
+  const users = await User.find({ _id: { $ne: userId } }).select(
+    "-refreshToken"
+  );
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+// get user details
+exports.getUserDetails = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id).select("-refreshToken");
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+  res.status(200).json({
+    success: true,
+    user,
   });
 });

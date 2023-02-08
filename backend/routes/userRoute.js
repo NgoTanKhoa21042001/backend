@@ -5,6 +5,8 @@ const {
   logout,
   updatePassword,
   updateProfile,
+  getUsers,
+  getUserDetails,
 } = require("../controller/userController");
 const router = express.Router();
 
@@ -12,7 +14,7 @@ const fileUpload = require("express-fileupload");
 const filesPayloadExists = require("../middleware/filePayloadExists");
 const fileExtLimiter = require("../middleware/fileExtLimiter");
 const fileSizeLimiter = require("../middleware/fileSizeLimiter");
-const { isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated, authorizeRoles } = require("../middleware/auth");
 
 router
   .route("/register")
@@ -36,5 +38,10 @@ router
     fileSizeLimiter,
     updateProfile
   );
+router.route("/users").get(isAuthenticated, authorizeRoles("admin"), getUsers);
+
+router
+  .route("/users/:id")
+  .get(isAuthenticated, authorizeRoles("admin"), getUserDetails);
 
 module.exports = router;
