@@ -24,6 +24,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     );
   user = await User.create({ email, name, password });
   if (user) {
+    // logic về lưu avatar
     const path = `avatar/${user._id}`;
     const userAvatar = await saveImages(req.files, path);
     user.avatar = { url: userAvatar[0] };
@@ -39,6 +40,7 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password)
     return next(new ErrorHandler("Please enter email & password", 400));
+  // tìm ra email và trùng khớp password
   let user = await User.findOne({ email }).select("+password");
   if (!user) return next(new ErrorHandler("Invalid email or password", 404));
   const isPasswordMatched = await user.comparePassword(password);
@@ -46,6 +48,7 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 404));
   } else {
+    // login thành công sẽ có accessToken
     const accessToken = getAccessToken(user);
     const newRefreshToken = getRefreshToken(user);
 
@@ -110,6 +113,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Please enter old & new password", 400));
 
   const user = await User.findById(req.userInfo.userId).select("+password");
+  // so sánh vs pass cũ
   const isPasswordMatched = await user.comparePassword(oldPassword);
   if (!isPasswordMatched)
     return next(new ErrorHandler("Old password is incorrect", 400));
@@ -124,7 +128,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 exports.updateProfile = asyncHandler(async (req, res, next) => {
   const newUserData = { name: req.body.name, email: req.body.email };
   let user = await User.findById(req.userInfo.userId);
-  if (!user) return next(new ErrorHandler("Old password is incorrect", 404));
+  if (!user) return next(new ErrorHandler("User not found", 404));
   user = await User.findByIdAndUpdate(req.userInfo.userId, newUserData, {
     new: true,
     runValidators: true,
