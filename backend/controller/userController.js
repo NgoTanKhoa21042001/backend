@@ -2,6 +2,9 @@ const ErrorHandler = require("../utils/errHandler");
 const asyncHandler = require("express-async-handler");
 
 const User = require("../models/userModel");
+const Store = require("../models/storeModel");
+const Order = require("../models/orderModel");
+const Product = require("../models/productModel");
 const { getRefreshToken, getAccessToken } = require("../utils/getTokens");
 const { sendUser } = require("../utils/sendUser");
 const jwt = require("jsonwebtoken");
@@ -170,4 +173,63 @@ exports.getUserDetails = asyncHandler(async (req, res, next) => {
     success: true,
     user,
   });
+});
+
+// update role
+exports.updateUserRole = asyncHandler(async (req, res, next) => {
+  const { roles, store, blocked } = req.body;
+  const { userId } = req.userInfo;
+  if (roles === "seller" || roles.includes("seller")) {
+    if (!store) return next(new ErrorHandler("Please specify a store", 400));
+    if (!(await Store.findById(store)))
+      return next(new ErrorHandler("Store not found", 404));
+    await User.findByIdAndUpdate(
+      req.params.id,
+      { roles, store, updatedBy: userId, blocked },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndMdify: false,
+      }
+    );
+  } else {
+    await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        roles,
+        updatedBy: userId,
+        blocked,
+        $unset: { store: "" },
+      },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndMdify: false,
+      }
+    );
+  }
+  res.status(200).json({ success: true });
+});
+
+// delete user
+// khi mà user đã order đang chờ hàng thì ko đc xóa user
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+  const activeOrder = await Order.findOne({ user: id });
+  if (activeOrder) {
+    return next(new ErrorHandler("User not delete", 404));
+  }
+  const activeProduct = await Product.findOne({
+    $or: [{ addedBy: id }, { updatedBy: id }],
+  });
+  if (activeProduct) {
+    return next(new ErrorHandler("User not delete", 404));
+  }
+  // remove avatar
+  const path = `avatar/${user._id}`;
+  removeFiles(path);
+  await user.remove();
+  res.status(200).json({ success: true, message: "User deleted." });
 });
