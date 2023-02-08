@@ -1,5 +1,5 @@
 const path = require("path");
-
+const fs = require("fs");
 exports.saveImages = async (files, getPath) => {
   // save images
   let returnPath = [];
@@ -24,4 +24,16 @@ exports.saveImages = async (files, getPath) => {
     });
   });
   return returnPath;
+};
+// gỡ ava
+exports.removeFiles = (getPath) => {
+  const filePath = path.join(__dirname, "..", `/public/images/${getPath}/`);
+  let removed = true;
+  if (fs.existsSync(filePath)) {
+    fs.rmdirSync(filePath, { recursive: true }, (err) => {
+      if (err) {
+        return (removed = false);
+      }
+    });
+  }
 };

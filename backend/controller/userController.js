@@ -5,13 +5,8 @@ const User = require("../models/userModel");
 const { getRefreshToken, getAccessToken } = require("../utils/getTokens");
 const { sendUser } = require("../utils/sendUser");
 const jwt = require("jsonwebtoken");
-const { saveImages } = require("../utils/processImages");
-const cookieOption = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "None",
-  maxAge: 24 * 60 * 60 * 1000,
-};
+const { saveImages, removeFiles } = require("../utils/processImages");
+const cookieOption = { httpOnly: true };
 // register user
 
 exports.registerUser = asyncHandler(async (req, res, next) => {
@@ -118,4 +113,34 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   await user.save();
 
   res.status(200).json({ success: true });
+});
+
+// update profile
+exports.updateProfile = asyncHandler(async (req, res, next) => {
+  const newUserData = { name: req.body.name, email: req.body.email };
+  let user = await User.findById(req.userInfo.userId);
+  if (!user) return next(new ErrorHandler("Old password is incorrect", 404));
+  user = await User.findByIdAndUpdate(req.userInfo.userId, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndMdify: false,
+  });
+  // avatar user
+  if (user) {
+    if (req.files) {
+      const path = `avatar/${user._id}`;
+      const remove = removeFiles(path);
+      if (remove) {
+        const userImage = await saveImages(req.files, path);
+        user.avatar = { url: userImage[0] };
+        await user.save();
+      } else {
+        return next(new ErrorHandler("Not procceded.Try again later.", 500));
+      }
+    }
+  }
+  res.status(200).json({
+    success: true,
+    user: sendUser(user),
+  });
 });
