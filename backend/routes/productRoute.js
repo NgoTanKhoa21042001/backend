@@ -1,5 +1,12 @@
 const express = require("express");
-const { addProduct, getProducts } = require("../controller/productController");
+const {
+  addProduct,
+  getProducts,
+  getProductsDetails,
+  getProductsByAuthorizeRoles,
+  updateProduct,
+  deleteProduct,
+} = require("../controller/productController");
 const fileUpload = require("express-fileupload");
 const filesPayloadExists = require("../middleware/filePayloadExists");
 const fileExtLimiter = require("../middleware/fileExtLimiter");
@@ -19,5 +26,26 @@ router
     addProduct
   )
   .get(getProducts);
+
+router
+  .route("/products/:id")
+  .get(getProductsDetails)
+  .put(
+    isAuthenticated,
+    authorizeRoles("admin", "seller"),
+    fileUpload({ createParentPath: true }),
+    fileExtLimiter([".png", ".jpg", ".jpeg"]),
+    fileSizeLimiter,
+    updateProduct
+  )
+  .delete(isAuthenticated, authorizeRoles("admin"), deleteProduct);
+
+router
+  .route("/authorized/products")
+  .get(
+    isAuthenticated,
+    authorizeRoles("admin", "seller"),
+    getProductsByAuthorizeRoles
+  );
 
 module.exports = router;

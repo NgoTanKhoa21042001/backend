@@ -30,6 +30,5 @@ app.use("/api/v1", store);
 app.use("/api/v1", product);
 
 app.use(errorMiddleware);
-// AUTHENTICATION : SO sánh pass của user so với info trên db, so sánh dữ liệu nhập vs db đã có
-// AUTHORIZATION: bạn là ai và bạn có quyền làm gi (phần quyền)
+
 module.exports = app;
