@@ -22,10 +22,13 @@ const category = require("./routes/categoryRoute");
 const brand = require("./routes/brandRoute");
 const user = require("./routes/userRoute");
 const store = require("./routes/storeRoute");
+const product = require("./routes/productRoute");
 app.use("/api/v1", category);
 app.use("/api/v1", brand);
 app.use("/api/v1", user);
 app.use("/api/v1", store);
+app.use("/api/v1", product);
+
 app.use(errorMiddleware);
 // AUTHENTICATION : SO sánh pass của user so với info trên db, so sánh dữ liệu nhập vs db đã có
 // AUTHORIZATION: bạn là ai và bạn có quyền làm gi (phần quyền)

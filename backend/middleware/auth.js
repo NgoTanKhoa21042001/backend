@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const ErrorHandler = require("../utils/errHandler");
 const jwt = require("jsonwebtoken");
-
+// xác thực người dùng, tt login
 exports.isAuthenticated = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   if (!authHeader?.startsWith("Bearer"))
@@ -13,7 +13,7 @@ exports.isAuthenticated = asyncHandler(async (req, res, next) => {
     next();
   });
 });
-
+// cấp quyền role cho phép truy cập gi đó
 exports.authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req?.userInfo?.roles)
