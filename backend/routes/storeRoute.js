@@ -5,7 +5,13 @@ const filesPayloadExists = require("../middleware/filePayloadExists");
 const fileExtLimiter = require("../middleware/fileExtLimiter");
 const fileSizeLimiter = require("../middleware/fileSizeLimiter");
 const { isAuthenticated, authorizeRoles } = require("../middleware/auth");
-const { addStore, getStores } = require("../controller/storeController");
+const {
+  addStore,
+  getStores,
+  getStoreDetails,
+  updateStore,
+  deleteStore,
+} = require("../controller/storeController");
 const router = express.Router();
 router
   .route("/stores")
@@ -19,4 +25,18 @@ router
     addStore
   )
   .get(isAuthenticated, authorizeRoles("admin", "seller"), getStores);
+
+router
+  .route("/stores/:id")
+  .get(isAuthenticated, authorizeRoles("admin", "seller"), getStoreDetails)
+  .put(
+    isAuthenticated,
+    authorizeRoles("admin", "seller"),
+    fileUpload({ createParentPath: true }),
+    fileExtLimiter([".png", ".jpg", ".jpeg"]),
+    fileSizeLimiter,
+    updateStore
+  )
+  .delete(isAuthenticated, authorizeRoles("admin"), deleteStore);
+
 module.exports = router;
