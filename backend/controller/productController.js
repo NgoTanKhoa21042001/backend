@@ -73,9 +73,15 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
 exports.getProductsDetails = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.id)
     // lấy ra doc trong mongoose
+    // truy vấn tới đối tượng
     .populate("store", "id title")
     .populate("brand", "id title")
-    .populate("category", "id title");
+    .populate("category", "id title")
+    .populate({
+      path: "reviews",
+      populate: { path: "user", select: "name avatar" },
+    });
+
   if (!product) return next(new ErrorHandler("Product not found", 404));
   res.status(200).json({
     success: true,
