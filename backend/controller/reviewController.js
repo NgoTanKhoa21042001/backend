@@ -75,6 +75,7 @@ exports.deleteProductReview = asyncHandler(async (req, res, next) => {
   if (reviews.length === 0) {
     ratings = 0;
   } else {
+    //tính bằng tổng của tất cả những đánh giá trung bình chia cho số lượng nhận xét
     ratings = avg / reviews.length;
   }
   const numOfReviews = reviews.length;

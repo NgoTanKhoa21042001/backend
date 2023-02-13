@@ -24,13 +24,14 @@ const user = require("./routes/userRoute");
 const store = require("./routes/storeRoute");
 const product = require("./routes/productRoute");
 const review = require("./routes/reviewRoute");
-
+const order = require("./routes/orderRoute");
 app.use("/api/v1", category);
 app.use("/api/v1", brand);
 app.use("/api/v1", user);
 app.use("/api/v1", store);
 app.use("/api/v1", product);
 app.use("/api/v1", review);
+app.use("/api/v1", order);
 
 app.use(errorMiddleware);
 
