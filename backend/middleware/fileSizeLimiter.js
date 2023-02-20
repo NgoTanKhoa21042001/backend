@@ -7,6 +7,7 @@ const fileSizeLimiter = (req, res, next) => {
 
     const filesOverLimit = [];
     // Which files are over the limit?
+    // duyệt qua từng file xem có file nào có size lớn hơn FILE_SIZE_LIMIT thì push những file đó vào mảng filesOverLimit
     Object.keys(files).forEach((key) => {
       if (files[key].size > FILE_SIZE_LIMIT) {
         filesOverLimit.push(files[key].name);

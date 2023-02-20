@@ -237,3 +237,61 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
   await user.remove();
   res.status(200).json({ success: true, message: "User deleted." });
 });
+
+// refresh token
+exports.refreshToken = asyncHandler(async (req, res, next) => {
+  const cookies = req.cookies;
+  // nếu ko có cookie
+  if (!cookies?.jwt) {
+    return next(new ErrorHandler("Unauthorized", 401));
+  }
+  const refreshToken = cookies.jwt;
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
+
+  const user = await User.findOne({ refreshToken });
+
+  if (!user) {
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (err, decoded) => {
+        // If there is an error while verifying the JWT (i.e., if the JWT is invalid or the signature is incorrect),
+        if (err) {
+          return next(new ErrorHandler("Forbidden", 403));
+        }
+        // Nếu JWT được xác minh thành công, mã sẽ truy xuất ID người dùng từ tải trọng JWT đã giải mã và sử dụng nó để tìm người dùng tương ứng trong db bằng phương thức findOne() từ mô hình Người dùng.
+        const hackedUser = await User.findOne({ _id: decoded.userId }).exec();
+        hackedUser.refreshToken = [];
+        await hackedUser.save();
+      }
+    );
+    return next(new ErrorHandler("Forbidden", 403));
+  }
+  //laays refresh token mowis
+  const newRefreshTokenArray = user.refreshToken.filter(
+    (rt) => rt !== refreshToken
+  );
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err) {
+        user.refreshToken = [...newRefreshTokenArray];
+        await user.save();
+        return next(new ErrorHandler("Unauthorized", 401));
+      }
+      if (err || user._id.toString() !== decoded.userId) {
+        return next(new ErrorHandler("Forbidden", 403));
+      }
+
+      const accessToken = getAccessToken(user);
+      const newRefreshToken = getRefreshToken(user);
+      user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+      await user.save();
+      res.cookie("jwt", newRefreshToken, cookieOption);
+      res
+        .status(200)
+        .json({ success: true, accessToken, user: sendUser(user) });
+    }
+  );
+});

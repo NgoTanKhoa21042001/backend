@@ -90,7 +90,7 @@ exports.updateStore = asyncHandler(async (req, res, next) => {
   }
   store = await Store.findByIdAndUpdate(req.params.id, data, {
     new: true,
-    runValidator: true,
+    runValidators: true,
     useFindAndModify: false,
   });
   if (store) {

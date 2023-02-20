@@ -9,6 +9,7 @@ const {
   getUserDetails,
   updateUserRole,
   deleteUser,
+  refreshToken,
 } = require("../controller/userController");
 const router = express.Router();
 
@@ -28,7 +29,9 @@ router
     registerUser
   );
 router.route("/login").post(loginUser);
-router.route("/logout").post(isAuthenticated, logout);
+router.route("/refresh").get(refreshToken);
+
+router.route("/logout").post(logout);
 router.route("/password/update").put(isAuthenticated, updatePassword);
 
 router
