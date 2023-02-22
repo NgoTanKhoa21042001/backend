@@ -36,4 +36,5 @@ exports.removeFiles = (getPath) => {
       }
     });
   }
+  return removed;
 };

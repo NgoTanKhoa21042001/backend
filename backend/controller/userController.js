@@ -126,7 +126,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 
 // update profile
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  const newUserData = { name: req.body.name, email: req.body.email };
+  const newUserData = { name: req.body.name };
   let user = await User.findById(req.userInfo.userId);
   if (!user) return next(new ErrorHandler("User not found", 404));
   user = await User.findByIdAndUpdate(req.userInfo.userId, newUserData, {
