@@ -19,6 +19,8 @@ trong đó nhiều sản phẩm có thể thuộc về nhiều cửa hàng và m
 
 1 danh mục có nhiều sản phẩm
 
+# store dùng để lưu trữ những products và users mà store đó bán và thông tin user. Là người dùng mua product đó ở cửa hàng nào và store sẽ lấy info người dùng
+
 // create order: "shippingInfo": {
 "address": "address 2",
 "city": "city",
@@ -58,3 +60,7 @@ if (!foundToken) {: nếu không tìm thấy user nào có Refresh Token trùng 
 res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });: xóa cookie JWT khỏi trình duyệt của người dùng. Chỉ có thể thực hiện được khi có response được gửi trả về cho client.
 
 Tóm lại, đoạn mã trên có chức năng để đảm bảo rằng mỗi Refresh Token chỉ được sử dụng một lần để tăng cường tính bảo mật của ứng dụng. Nếu Refresh Token đã được sử dụng trước đó thì nó sẽ không còn hợp lệ và không thể sử dụng lại được. Sau khi Refresh Token bị sử dụng, cookie JWT sẽ bị xóa khỏi trình duyệt của người dùng.
+
+# Store table
+
+Bảng store trong một trang web thương mại điện tử được sử dụng để hiển thị danh sách các sản phẩm hoặc dịch vụ mà cửa hàng đang bán. Nó cho phép khách hàng truy cập vào thông tin chi tiết về sản phẩm, giá cả, thông tin khuyến mãi và các tính năng khác của sản phẩm.

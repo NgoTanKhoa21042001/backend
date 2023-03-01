@@ -41,7 +41,7 @@ router
   .delete(isAuthenticated, authorizeRoles("admin"), deleteProduct);
 
 router
-  .route("/authorized/products")
+  .route("/athorized/products")
   .get(
     isAuthenticated,
     authorizeRoles("admin", "seller"),

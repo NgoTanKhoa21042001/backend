@@ -149,7 +149,10 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   if (!product) {
     return next(new ErrorHandler("Store not found", 409));
   }
-  const active = await Order.findOne({ product: req.params.id });
+  // à sử dụng toán tử $elemMatch để chỉ định rằng chúng ta muốn tìm một mặt hàng có thuộc tính product bằng req.params.id.
+  const active = await Order.findOne({
+    orderItems: { $elemMatch: { product: req.params.id } },
+  });
   // nếu đã có order rồi thì ko dc xóa product
   if (active) {
     return next(

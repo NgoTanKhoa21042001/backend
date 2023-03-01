@@ -30,16 +30,13 @@ exports.getBrandDetails = asyncHandler(async (req, res, next) => {
 
 exports.updateBrand = asyncHandler(async (req, res, next) => {
   req.body.updatedBy = req.userInfo.userId;
-  let brand = await Category.findById(req.params.id);
-
-  if (!brand) return next(new ErrorHandler("Brand not found", 404));
-
-  brand = await Category.findByIdAndUpdate(req.params.id, req.body, {
+  let brand = await Brand.findById(req.params.id);
+  if (!brand) return next(new ErrorHandler("Brand not found.", 404));
+  brand = await Brand.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
-
   res.status(201).json({ success: true, brand });
 });
 
