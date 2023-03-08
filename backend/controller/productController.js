@@ -127,9 +127,11 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   });
   if (product) {
     if (req.files) {
+      // Để lưu trữ các hình ảnh sản phẩm mới
       const path = `products/${product.store}/${product._id}`;
       const remove = removeFiles(path);
       if (remove) {
+        //  nó sử dụng phương thức saveImages() để lưu trữ các hình ảnh mới tải lên. Hàm saveImages() sẽ trả về một mảng các đường dẫn đến các hình ảnh mới.
         const productImages = await saveImages(req.files, path);
         product.images = productImages.map((image) => ({ url: image }));
         await product.save();
@@ -159,7 +161,13 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
       new ErrorHandler("Product is used in ordered. Could not deleted", 404)
     );
   }
-  await product.remove();
-  if (active)
+  // gỡ ảnh
+  const path = `products/${product.store}/${product._id}`;
+  const remove = removeFiles(path);
+
+  if (remove) {
+    await product.remove();
     res.status(200).json({ success: true, message: "Product deleted" });
+  }
+  new ErrorHandler("Not procceded", 404);
 });
