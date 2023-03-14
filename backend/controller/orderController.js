@@ -1,7 +1,5 @@
 const ErrorHandler = require("../utils/errHandler");
 const asyncHandler = require("express-async-handler");
-const { saveImages, removeFiles } = require("../utils/processImages");
-const Store = require("../models/storeModel");
 const Product = require("../models/productModel");
 const Order = require("../models/orderModel");
 
@@ -16,7 +14,6 @@ exports.newOrder = asyncHandler(async (req, res, next) => {
     shippingPrice,
     totalPrice,
   } = req.body;
-
   const order = await Order.create({
     shippingInfo,
     orderItems,
@@ -31,13 +28,12 @@ exports.newOrder = asyncHandler(async (req, res, next) => {
 });
 
 // get single order
-exports.getSignleOrder = asyncHandler(async (req, res, next) => {
+exports.getSingleOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
     "orderItems.product",
     "title images"
   );
   if (!order) return next(new ErrorHandler("Order not found.", 404));
-
   res.status(200).json({ success: true, order });
 });
 
@@ -85,10 +81,8 @@ exports.updateOrder = asyncHandler(async (req, res, next) => {
       await updateStock(o.product, o.quantity);
     });
   }
-
   order.orderStatus = req.body.status;
   if (req.body.status === "Delivered") {
-    //nó sẽ duyệt qua mỗi sản phẩm trong đơn hàng (order.orderItems) và gọi hàm updateStock
     order.deliveredAt = Date.now();
   }
 
