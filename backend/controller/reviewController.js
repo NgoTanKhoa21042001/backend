@@ -66,7 +66,7 @@ exports.deleteProductReview = asyncHandler(async (req, res, next) => {
   const reviews = product.reviews.filter(
     (rev) => rev._id.toString() !== req.query.id.toString()
   );
-  //tính trung bình các đánh giá của một sản phẩm,
+  //tính trung bình các rates của một sản phẩm,
   let avg = 0;
   reviews.forEach((rev) => {
     avg += rev.rating;

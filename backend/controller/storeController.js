@@ -69,19 +69,17 @@ exports.updateStore = asyncHandler(async (req, res, next) => {
     email,
     phone,
   } = req.body;
-  console.log(req.userInfo);
   const updatedBy = req.userInfo.userId;
   const location = { address, city, zipCode, state, country };
   const data = { title, description, location, email, phone, updatedBy };
 
   const { roles } = req.userInfo;
   let store;
-  if (roles == "seller") {
-    // store sẽ đợi cho nó tìm ra id và user
-    store = await Store.findOne({
-      _id: req.params.id,
-      store: req.userInfo.storeId,
-    });
+  if (roles === "seller" || roles.includes("seller")) {
+    const storeId = req.userInfo.storeId;
+    if (req.params.id !== storeId)
+      return next(new ErrorHandler("Store not found", 404));
+    store = await Store.findById(storeId);
   } else {
     store = await Store.findById(req.params.id);
   }
