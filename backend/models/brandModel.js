@@ -20,6 +20,7 @@ const brandSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
+    //  danh mục đó chứa các sản phẩm đã ngừng sản xuất hoặc không còn được bán nữa
     discontinued: { Boolean, default: false },
   },
   { timestamps: true }

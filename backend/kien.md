@@ -3,9 +3,9 @@ Population có thể tự động tạo đường dẫn với các document vớ
 AUTHENTICATION : SO sánh pass của user so với info trên db, so sánh dữ liệu nhập vs db đã có
 AUTHORIZATION: bạn là ai và bạn có quyền làm gi (phần quyền)
 
-## user và store
+## seller và store
 
-trong đó một người dùng có thể có nhiều cửa hàng user và store
+1 store có nhiều seller
 
 ## user và order
 
@@ -15,9 +15,13 @@ user có nhiều order
 
 trong đó nhiều sản phẩm có thể thuộc về nhiều cửa hàng và mỗi cửa hàng có thể có nhiều sản phẩm.
 
-## product và category
+## product và category, brand
 
 1 danh mục có nhiều sản phẩm
+
+## product và order
+
+order nhiều product
 
 # store dùng để lưu trữ những products và users mà store đó bán và thông tin user. Là người dùng mua product đó ở cửa hàng nào và store sẽ lấy info người dùng
 

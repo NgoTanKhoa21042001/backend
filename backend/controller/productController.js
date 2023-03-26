@@ -57,7 +57,18 @@ exports.getProducts = asyncHandler(async (req, res, next) => {
   const apiFeature = new ApiFeatures(Product.find().sort(sortBy), req.query)
     .search()
     .filter();
-  let filteredProductsCount = await apiFeature.query.length;
+
+  const filteredApiFeature = new ApiFeatures(
+    Product.find().sort(sortBy),
+    req.query
+  )
+    .search()
+    .filter();
+
+  let filterdProduct = await filteredApiFeature.query;
+
+  let filteredProductsCount = filterdProduct.length;
+
   apiFeature.pagination(resultPerPage);
   const products = await apiFeature.query;
 
