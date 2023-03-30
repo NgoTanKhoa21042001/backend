@@ -68,3 +68,7 @@ Tóm lại, đoạn mã trên có chức năng để đảm bảo rằng mỗi R
 # Store table
 
 Bảng store trong một trang web thương mại điện tử được sử dụng để hiển thị danh sách các sản phẩm hoặc dịch vụ mà cửa hàng đang bán. Nó cho phép khách hàng truy cập vào thông tin chi tiết về sản phẩm, giá cả, thông tin khuyến mãi và các tính năng khác của sản phẩm.
+
+# Thư mục utils
+
+Thư mục utils trong Express là một thư mục được sử dụng để chứa các công cụ hữu ích cho ứng dụng Express. Các công cụ này có thể bao gồm các hàm tiện ích, middleware, hoặc các module khác được sử dụng để xử lý các tác vụ phổ biến trong ứng dụng web, chẳng hạn như xác thực, xử lý lỗi, hoặc tạo mã thông báo. Thư mục utils thường được sử dụng để tách các chức năng riêng biệt khỏi các tệp chính của ứng dụng, giúp cho mã nguồn trở nên dễ đọc và dễ bảo trì hơn.
